@@ -28,7 +28,7 @@ device_a = {
     "device_type": "cisco_ios_telnet",
     "ip": '192.168.1.100',
     "username": "admin",
-    "password": "password",
+    "password": "ChainStop&Big7",
     "port" : 32770, # only included as i was using EVE-NG which does port forwarding on Telnet. 
     "global_delay_factor": 3 # allows 300 seconds for command to complete. 
 }
@@ -36,7 +36,7 @@ device_b = {
     "device_type": "cisco_ios_telnet",
     "ip": '192.168.1.100',
     "username": "admin",
-    "password": "password",
+    "password": "ChainStop&Big7",
     "port" : 32773, 
     "global_delay_factor": 3
 }
@@ -54,12 +54,18 @@ for devices in all_devices:
     if mac_cisco in output: # find the mac, if it's there run this. 
         var_interface = output.split()
         interface = var_interface[7] # get the interface this MAC is on, may need to modify based on device type, tested on NXOS
-        # get the hostname from the CORRECT device
-        hostname = connect.send_command("show run | i hostname")
-        hostname1 = hostname.split()
-        cisco_hostname = hostname1[1] 
-        print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}")
-        break
+        sh_int = connect.send_command("show interface " + interface) #look at the interface details
+        x = sh_int.splitlines() 
+        access_port = x[6] #find the "port mode" line
+        if "access" in access_port: #if "access" as port-mode, do the below
+            # get the hostname from the CORRECT device
+            hostname = connect.send_command("show run | i hostname")
+            hostname1 = hostname.split()
+            cisco_hostname = hostname1[1] 
+            print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}") 
+            break
+        else: # if port-mode doesn't have access, continue until it finds it. 
+            continue
     else:
         print("sorry can't find this MAC!")
 
