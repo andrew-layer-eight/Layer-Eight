@@ -28,7 +28,7 @@ device_a = {
     "device_type": "cisco_ios_telnet",
     "ip": '192.168.1.100',
     "username": "admin",
-    "password": "ChainStop&Big7",
+    "password": "password",
     "port" : 32770, # only included as i was using EVE-NG which does port forwarding on Telnet. 
     "global_delay_factor": 3 # allows 300 seconds for command to complete. 
 }
@@ -36,7 +36,7 @@ device_b = {
     "device_type": "cisco_ios_telnet",
     "ip": '192.168.1.100',
     "username": "admin",
-    "password": "ChainStop&Big7",
+    "password": "password",
     "port" : 32773, 
     "global_delay_factor": 3
 }
