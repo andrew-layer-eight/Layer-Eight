@@ -54,16 +54,19 @@ for devices in all_devices:
     if mac_cisco in output: 
         var_interface = output.split()
         interface_regex = re.search(r"(?:GigabitEthernet|TenGigabitEthernet|FastEthernet|FortyGigabitEthernet)\d+((/\d+)+(\.\d+)?)?)", var_interface)
-       # interface = var_interface[7] # get the interface this MAC is on, may need to modify based on device type, tested on NXOS - change this to Regex
-        sh_int = connect.send_command("show interface " + interface) #look at the interface details
-        x = sh_int.splitlines() 
-        access_port = x[6] #find the "port mode" line - Change this to Regex
-        if "access" in access_port: #if "access" as port-mode, do the below
+       # interface = var_interface[7] # get the interface this MAC is on (Rollback if needed)
+       # check the interface is in Access Mode Cisco IOS-XE
+        sh_int = connect.send_command("show interface " + interface_regex + " switchport") #look at the interface details
+        access_port = "Administrative Mode: static access"
+        #x = sh_int.splitlines() 
+        #access_port = x[6] #find the "port mode" line - Change this to Regex
+        #if "access" in access_port: #if "access" as port-mode, do the below
+        if re.findall(r'"(.*?)"', access_port) in sh_int:
             # get the hostname from the CORRECT device
             hostname = connect.send_command("show run | i hostname")
             hostname1 = hostname.split()
             cisco_hostname = hostname1[1] 
-            print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}") 
+            print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface_regex}") 
             break
         else: # if port-mode doesn't have access, continue until it finds it. Layer 2 environments
             continue
