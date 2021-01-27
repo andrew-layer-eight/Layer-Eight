@@ -38,3 +38,4 @@ for devices in all_devices:
         print(find_as_number)
     else:    
     
+# lets move this to be done via an API if that fails then run SSH.
