@@ -5,6 +5,11 @@ from getpass import getuser
 
 print("Welcome to MAC finder, this will search all switches in the network for a device MAC")
 
+#--------------------------------- Regex ---------------------------------#
+
+interface_regex = re.compile(r"(?:GigabitEthernet|TenGigabitEthernet|FastEthernet|FortyGigabitEthernet|Eth)\d+((/\d+)+(\.\d+)?)?")
+access_regex = re.compile(r"(\sOperational\sMode\:\saccess)")
+
 #--------------------------------- Start of Functions ---------------------------------#
 
 # convert the mac address to Cisco standard xxxx.xxxx.xxxx
@@ -20,8 +25,32 @@ def cisco_mac(in_item):
         index += 1
     return "".join(my_mac) 
 
-#def switch_commands:
+# show commands on switch to get interface, port mode, hostname
+def switch_commands():
+    for line_item in output.splitlines():
+        if mac_cisco in line_item:       
+            var_int = interface_regex.search(line_item)
+            interface = var_int.group()
+            sh_int = connect.send_command("show interface " + interface + " switchport") #look at the interface details
+            #access_port = "Operational Mode: access"
+            #x = sh_int.splitlines()
+            for port_info in sh_int.splitlines():
+                var_mode = access_regex.search(port_info)
+                if var_mode is not None:
+                # get the hostname from the CORRECT device
+                    hostname = connect.send_command("show run | i hostname")
+                    hostname1 = hostname.split()
+                    cisco_hostname = hostname1[1] 
+                    print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}") 
+                    break
+                else: # if port-mode doesn't have access, continue until it finds it - Layer 2 environments
+                    continue
+            else:
+                break
+        else:
+          print("sorry can't find this MAC! - have you typed it correctly?")
 
+# for threading, connecting to all devices in parallel rather than running through one by one. 
 #def connect_devices:
 
 #
@@ -81,9 +110,7 @@ all_devices = [device_a] #device_b]
 ipfile = open("ipaddresses.txt")
 """
 
-#--------------------------------- Regex ---------------------------------#
-interface_regex = re.compile(r"(?:GigabitEthernet|TenGigabitEthernet|FastEthernet|FortyGigabitEthernet|Eth)\d+((/\d+)+(\.\d+)?)?")
-access_regex = re.compile(r"(\sOperational\sMode\:\saccess)")
+
 
 #--------------------------------- Start of Job ---------------------------------#
 for devices in all_devices:
