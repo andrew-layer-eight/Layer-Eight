@@ -41,10 +41,11 @@ def switch_commands():
                     hostname1 = hostname.split()
                     cisco_hostname = hostname1[1] 
                     return f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}"
+                    
                 else: # if port-mode doesn't have access, continue until it finds it - Layer 2 environments
                     continue
         else:
-            print("sorry can't find this MAC! - have you typed it correctly?")
+            continue
 
 # for threading, connecting to all devices in parallel rather than running through one by one. 
 #def connect_devices:
@@ -81,11 +82,8 @@ user_mac = input("What is the MAC you're searching for: ").lower() # ask user fo
 in_mac = [letter for letter in user_mac if letter.isalnum()] #  remove all non alphanumeric characters, create a new variable 
 mac_cisco = (cisco_mac(in_mac)) # create a variable from the function and user input
 
-
-
 username = getuser() #this takes the current logged in user - will need changing if using a different account to  log in. 
 password = getpass()
-
 
 # create a dictionary for devices. this can be improved... 
 device_a = {
@@ -109,40 +107,16 @@ all_devices = [device_a] #device_b]
 ipfile = open("ipaddresses.txt")
 """
 
-
-
 #--------------------------------- Start of Job ---------------------------------#
 for devices in all_devices:
     connect = ConnectHandler(**devices) #ssh to the devices using the dictionary above
     output = connect.send_command("show mac address-table | inc " + str(mac_cisco)) #now look for the MAC on these switches
     if mac_cisco in output: 
         switch_commands()
-        
-        # Turn this into a function!!! 
-        """
-        for line_item in output.splitlines():
-            if mac_cisco in line_item:       
-                var_int = interface_regex.search(line_item)
-                interface = var_int.group()
-                sh_int = connect.send_command("show interface " + interface + " switchport") #look at the interface details
-                #access_port = "Operational Mode: access"
-                x = sh_int.splitlines()
-                for port_info in sh_int.splitlines():
-                    var_mode = access_regex.search(port_info)
-                    if var_mode is not None:
-                         # get the hostname from the CORRECT device
-                        hostname = connect.send_command("show run | i hostname")
-                        hostname1 = hostname.split()
-                        cisco_hostname = hostname1[1] 
-                        print(f"This MAC: {mac_cisco} is on this device: {cisco_hostname} and this port: {interface}") 
-                        break
-                    else: # if port-mode doesn't have access, continue until it finds it. Layer 2 environments
-                        continue
-            else:
-                break
+        print(switch_commands())
     else:
-        print("sorry can't find this MAC! - have you typed it correctly?")
-"""
+        print("Sorry I can't find this MAC Address!!")
+
 print("MAC Finder has now completed")
 
 #--------------------------------- disconnect ---------------------------------#
