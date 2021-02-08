@@ -1,0 +1,39 @@
+!! Remove if this already exists !!
+crypto ikev2 proposal ALL-PROP
+ encryption
+ integrity
+ group
+
+crypto ikev2 policy NAME-POL
+ match address local x.x.x.x
+ proposal ALL-PROP
+
+crypto ikev2 keyring NAME-KEYRING
+ peer PEER-IP
+ address PEER-IP
+ pre-shared-key KEY
+
+crypto ikev2 profile NAME-IKEV2-PROF
+ match address local x.x.x
+ match identity remote address x.x.x.x mask
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local NAME-KEYRING
+ lifetime 3600
+ dpd 10 5 on-demand
+
+!! Remove if this already exists !!
+crypto ipsec transform-set TS-ESP-SHA-HMAC etc
+ mode tunnel
+
+crypto ipsec profile NAME-IPSEC-PROF
+ set transform-set TS-ESP-SHA-HMAC
+ set pfs group xx
+ set ikev2-profile NAME-IKEV2-PROF
+
+int tuXXX
+ ip address <CUSTOMER VTI> MASK
+ tunnel mode ipsec ipv4
+ tunnel destination PEER IP
+ tunnel protection NAME-IPSEC-PROF
+ no shut
