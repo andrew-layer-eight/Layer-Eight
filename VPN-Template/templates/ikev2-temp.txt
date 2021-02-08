@@ -12,15 +12,15 @@ crypto ikev2 policy {{ vpn_name }}-POL
 crypto ikev2 keyring {{ vpn_name }}-KEYRING
  peer {{ peer_gw }}
  address {{ peer_gw }}
- pre-shared-key KEY
+ pre-shared-key {{ key }}
 
 crypto ikev2 profile {{ vpn_name }}-IKEV2-PROF
- identity local address
+ identity local address {{ local_peer }}
  match identity remote address {{ peer_gw }} 255.255.255.255
  authentication remote pre-share
  authentication local pre-share
  keyring local {{ vpn_name }}-KEYRING
- lifetime <3600>
+ lifetime {{ ike_lifetime }}
  dpd 10 5 on-demand
 
 !! Remove if this already exists !!
@@ -28,13 +28,14 @@ crypto ipsec transform-set TS-ESP-SHA-HMAC etc
  mode tunnel
 
 crypto ipsec profile {{ vpn_name }}-IPSEC-PROF
- set security-association lifetime 27000
+ set security-association lifetime {{ ipsec_lifetime }}
  set transform-set TS-ESP-SHA-HMAC
- set pfs group xx
+ set pfs group {{ pfs2 }}
  set ikev2-profile {{ vpn_name }}-IKEV2-PROF
 
-int tuXXX
- ip address <CUSTOMER VTI> MASK
+int tu{{ tunnel_int }}
+ ip address {{ tunnel_ip }} MASK
+ decription {{ vpn_name }} VPN to {{ dc }}
  tunnel source Loopback0
  tunnel mode ipsec ipv4
  tunnel destination {{ peer_gw }}
