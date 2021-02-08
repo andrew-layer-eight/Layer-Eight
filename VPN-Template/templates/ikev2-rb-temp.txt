@@ -41,3 +41,5 @@ int tu{{ tunnel_int }}
  tunnel destination {{ peer_gw }}
  tunnel protection {{ vpn_name }}-IPSEC-PROF
  no shut
+
+########### DONT FORGET TO CONFIGURE ROUTING ############
