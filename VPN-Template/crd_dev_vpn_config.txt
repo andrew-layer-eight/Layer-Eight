@@ -1,0 +1,41 @@
+Here is your config for the CRD_DEV VPN
+
+############## Remove if this already exists #############
+crypto ikev2 proposal ALL-PROP
+ encryption
+ integrity
+ group
+
+crypto ikev2 policy CRD_DEV-POL
+   proposal ALL-PROP
+
+crypto ikev2 keyring CRD_DEV-KEYRING
+ peer 10.10.10.1
+ address 10.10.10.1
+ pre-shared-key test
+
+crypto ikev2 profile CRD_DEV-IKEV2-PROF
+ identity local address 1.1.1.1
+ match identity remote address 10.10.10.1 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local CRD_DEV-KEYRING
+ lifetime 38000
+ dpd 10 5 on-demand
+
+ip access-list extended CRD_DEV-VPN-CACL
+ permit ip 10.10.10.0/8 200.1.1.0
+
+############# Remove if this already exists ##############
+crypto ipsec transform-set TS-ESP-SHA-HMAC etc
+ mode tunnel
+
+crypto map CMAP  ipsec-isakmp
+ set peer 10.10.10.1
+ set pfs group none
+ set security-association lifetime seconds 2400
+ set transform-set TS-ESP-SHA-HMAC
+ set ikev2-profile CRD_DEV-IKEV2-PROF
+ match address CRD_DEV-VPN-CACL
+
+########### DONT FORGET TO CONFIGURE ROUTING ############
