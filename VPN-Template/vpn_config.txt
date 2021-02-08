@@ -1,4 +1,4 @@
-Here is your config for the ANDY_PROD VPN
+Here is your config for the CRD_TEST VPN
 
 !! Remove if this already exists !!
 crypto ikev2 proposal ALL-PROP
@@ -6,20 +6,20 @@ crypto ikev2 proposal ALL-PROP
  integrity
  group
 
-crypto ikev2 policy ANDY_PROD-POL
+crypto ikev2 policy CRD_TEST-POL
    proposal ALL-PROP
 
-crypto ikev2 keyring ANDY_PROD-KEYRING
+crypto ikev2 keyring CRD_TEST-KEYRING
  peer 1.1.1.1
  address 1.1.1.1
- pre-shared-key testpsk
+ pre-shared-key test
 
-crypto ikev2 profile ANDY_PROD-IKEV2-PROF
+crypto ikev2 profile CRD_TEST-IKEV2-PROF
  identity local address 5.5.5.5
  match identity remote address 1.1.1.1 255.255.255.255
  authentication remote pre-share
  authentication local pre-share
- keyring local ANDY_PROD-KEYRING
+ keyring local CRD_TEST-KEYRING
  lifetime 
  dpd 10 5 on-demand
 
@@ -27,17 +27,17 @@ crypto ikev2 profile ANDY_PROD-IKEV2-PROF
 crypto ipsec transform-set TS-ESP-SHA-HMAC etc
  mode tunnel
 
-crypto ipsec profile ANDY_PROD-IPSEC-PROF
+crypto ipsec profile CRD_TEST-IPSEC-PROF
  set security-association lifetime 28800
  set transform-set TS-ESP-SHA-HMAC
- set pfs group none
- set ikev2-profile ANDY_PROD-IKEV2-PROF
+ set pfs group 18
+ set ikev2-profile CRD_TEST-IKEV2-PROF
 
-int tu400
- ip address 10.1.1.1 MASK
- decription ANDY_PROD 
+int tu200
+ ip address 9.1.1.1 MASK
+ decription CRD_TEST VPN to NY4
  tunnel source Loopback0
  tunnel mode ipsec ipv4
  tunnel destination 1.1.1.1
- tunnel protection ANDY_PROD-IPSEC-PROF
+ tunnel protection CRD_TEST-IPSEC-PROF
  no shut

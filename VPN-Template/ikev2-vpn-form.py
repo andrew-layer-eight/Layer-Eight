@@ -28,9 +28,10 @@ else:
 
 
 # apply the variables to the template
-output = template.render(vpn_name=vpn_name, peer_gw=peer_pub_ip, key=psk, local_peer=local_pub_ip, tunnel_int=tunnel_int, tunnel_ip=tunnel_ip, ipsec_lifetime=ipsec_lifetime, pfs2=pfs2, dc=dc)
+output = template.render(vpn_name=vpn_name, peer_gw=peer_pub_ip, key=psk, local_peer=local_pub_ip, tunnel_int=tunnel_int, tunnel_ip=tunnel_ip, ike_lifetime=ike_lifetime, ipsec_lifetime=ipsec_lifetime, pfs2=pfs2, dc=dc)
 print(output)
 # write the output to a txt file so can copy and paste it. 
 file = open("vpn_config.txt", "w")
 file.write(output)
 file.close()
+
