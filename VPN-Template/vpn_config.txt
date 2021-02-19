@@ -1,0 +1,43 @@
+Here is your config for the CRD_TEST VPN
+
+!! Remove if this already exists !!
+crypto ikev2 proposal ALL-PROP
+ encryption
+ integrity
+ group
+
+crypto ikev2 policy CRD_TEST-POL
+   proposal ALL-PROP
+
+crypto ikev2 keyring CRD_TEST-KEYRING
+ peer 1.1.1.1
+ address 1.1.1.1
+ pre-shared-key test
+
+crypto ikev2 profile CRD_TEST-IKEV2-PROF
+ identity local address 5.5.5.5
+ match identity remote address 1.1.1.1 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local CRD_TEST-KEYRING
+ lifetime 
+ dpd 10 5 on-demand
+
+!! Remove if this already exists !!
+crypto ipsec transform-set TS-ESP-SHA-HMAC etc
+ mode tunnel
+
+crypto ipsec profile CRD_TEST-IPSEC-PROF
+ set security-association lifetime 28800
+ set transform-set TS-ESP-SHA-HMAC
+ set pfs group 18
+ set ikev2-profile CRD_TEST-IKEV2-PROF
+
+int tu200
+ ip address 9.1.1.1 MASK
+ decription CRD_TEST VPN to NY4
+ tunnel source Loopback0
+ tunnel mode ipsec ipv4
+ tunnel destination 1.1.1.1
+ tunnel protection CRD_TEST-IPSEC-PROF
+ no shut
