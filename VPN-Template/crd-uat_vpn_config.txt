@@ -1,6 +1,6 @@
 ############################# for your Cisco Router, Not ASA #############################
 
-Here is your config for the {{ vpn_name }} VPN
+Here is your config for the CRD-UAT VPN
 
 ############################# Remove if this already exists #############################
 crypto ikev2 proposal ALL-PROP
@@ -8,37 +8,37 @@ crypto ikev2 proposal ALL-PROP
  integrity
  group
 
-crypto ikev2 policy {{ vpn_name }}-POL
+crypto ikev2 policy CRD-UAT-POL
    proposal ALL-PROP
 
-crypto ikev2 keyring {{ vpn_name }}-KEYRING
- peer {{ peer_gw }}
- address {{ peer_gw }}
- pre-shared-key {{ key }}
+crypto ikev2 keyring CRD-UAT-KEYRING
+ peer 1.1.1.1
+ address 1.1.1.1
+ pre-shared-key test
 
-crypto ikev2 profile {{ vpn_name }}-IKEV2-PROF
- identity local address {{ local_peer }}
- match identity remote address {{ peer_gw }} 255.255.255.255
+crypto ikev2 profile CRD-UAT-IKEV2-PROF
+ identity local address 2.2.2.2
+ match identity remote address 1.1.1.1 255.255.255.255
  authentication remote pre-share
  authentication local pre-share
- keyring local {{ vpn_name }}-KEYRING
- lifetime {{ ike_lifetime }}
+ keyring local CRD-UAT-KEYRING
+ lifetime 6700
  dpd 10 5 on-demand
 
 ############################# Add any addtional ACL entries required, I've not yet developed the python to make this dynamic, sorry! #############################
-ip access-list extended {{ vpn_name }}-VPN-CACL
- ip permit {{ ed_local }} {{ ed_remote }}
+ip access-list extended CRD-UAT-VPN-CACL
+ None
 
 ############################# Remove if this already exists #############################
 crypto ipsec transform-set TS-ESP-SHA-HMAC etc
  mode tunnel
 
-crypto map {{ cmap_name }} {{ cmap_number }} ipsec-isakmp
- set peer {{ peer_gw }}
- set pfs group {{ pfs2 }}
- set security-association lifetime seconds {{ ipsec_lifetime }}
+crypto map CMAP  ipsec-isakmp
+ set peer 1.1.1.1
+ set pfs group 13
+ set security-association lifetime seconds 400
  set transform-set TS-ESP-SHA-HMAC
- set ikev2-profile {{ vpn_name }}-IKEV2-PROF
- match address {{ vpn_name }}-VPN-CACL
+ set ikev2-profile CRD-UAT-IKEV2-PROF
+ match address CRD-UAT-VPN-CACL
 
 ############################# DONT FORGET TO CONFIGURE ROUTING, FW Rules and any NAT Statements #############################
