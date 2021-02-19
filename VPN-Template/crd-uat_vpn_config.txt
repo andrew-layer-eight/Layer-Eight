@@ -1,0 +1,44 @@
+############################# for your Cisco Router, Not ASA #############################
+
+Here is your config for the CRD-UAT VPN
+
+############################# Remove if this already exists #############################
+crypto ikev2 proposal ALL-PROP
+ encryption
+ integrity
+ group
+
+crypto ikev2 policy CRD-UAT-POL
+   proposal ALL-PROP
+
+crypto ikev2 keyring CRD-UAT-KEYRING
+ peer 1.1.1.1
+ address 1.1.1.1
+ pre-shared-key test
+
+crypto ikev2 profile CRD-UAT-IKEV2-PROF
+ identity local address 2.2.2.2
+ match identity remote address 1.1.1.1 255.255.255.255
+ authentication remote pre-share
+ authentication local pre-share
+ keyring local CRD-UAT-KEYRING
+ lifetime 6700
+ dpd 10 5 on-demand
+
+############################# Add any addtional ACL entries required, I've not yet developed the python to make this dynamic, sorry! #############################
+ip access-list extended CRD-UAT-VPN-CACL
+ None
+
+############################# Remove if this already exists #############################
+crypto ipsec transform-set TS-ESP-SHA-HMAC etc
+ mode tunnel
+
+crypto map CMAP  ipsec-isakmp
+ set peer 1.1.1.1
+ set pfs group 13
+ set security-association lifetime seconds 400
+ set transform-set TS-ESP-SHA-HMAC
+ set ikev2-profile CRD-UAT-IKEV2-PROF
+ match address CRD-UAT-VPN-CACL
+
+############################# DONT FORGET TO CONFIGURE ROUTING, FW Rules and any NAT Statements #############################
