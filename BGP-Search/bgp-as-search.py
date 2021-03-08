@@ -32,10 +32,13 @@ for devices in all_devices:
  # add a section to search for a specific AS Number
     print("Are you looking for a specific BGP AS Number?")
     input("Y/N: ")
-    if input == 'Y':
+    if input == 'Y' or 'y':
         as_num = input("What AS Number? ")
         find_as_number = as_number.find("local AS number", as_num)
         print(find_as_number)
-    else:    
-    
+    else: 
+        print("Ok, I'll get you a list of ALL the AS Numbers i know about")
+        
+           
 # lets move this to be done via an API if that fails then run SSH.
+
