@@ -1,4 +1,6 @@
 # connect to devices via API, check all CDP neighbors, then based off the CDP information change the interface description to a particular format/standard. 
+import requests
+
 
 # list of devices
 
