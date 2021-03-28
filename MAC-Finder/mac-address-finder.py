@@ -103,7 +103,7 @@ device_b = {
     "global_delay_factor": 3
 }
 all_devices = [device_a] #device_b]
-""" This section is in progress, to work with above... find out how not to store creds in script and also to reference an IP/port list. 
+""" This section is in progress, to work with above... find out how to reference an IP/port list. 
 ipfile = open("ipaddresses.txt")
 """
 
