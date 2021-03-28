@@ -1,3 +1,14 @@
 curl -k https://ios-xe-mgmt.cisco.com:9443/restconf/ -u "developer:C1sco12345"
 
 run this from terminal to check connectivity. sub out creds and url for ip. 
+
+should get a response like this
+<restconf xmlns="urn:ietf:params:xml:ns:yang:ietf-restconf">
+  <data/>
+  <operations/>
+  <yang-library-version>2016-06-21</yang-library-version>
+</restconf>
+
+This link has it all!!!
+https://ultraconfig.com.au/blog/restconf-tutorial-everything-you-need-to-know-about-restconf-in-2020/
+
